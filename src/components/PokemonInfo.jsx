@@ -1,6 +1,7 @@
 import { Component } from 'react';
 import PokemonErrorView from './PokemonErrorView';
 import PokemonDataView from './PokemonDataView';
+import PokemonPendingView from './PokemonPendingView';
 
 export class PokemonInfo extends Component {
   state = {
@@ -39,7 +40,7 @@ export class PokemonInfo extends Component {
     }
 
     if (status === 'pending') {
-      return <div>Loading...</div>;
+      return <PokemonPendingView />;
     }
 
     if (status === 'rejected') {
