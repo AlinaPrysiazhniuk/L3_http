@@ -15,7 +15,7 @@ export default function PokemonPendingView({ pokemon }) {
 
   return (
     <div>
-      <div style={StyleSheet.spinner}>
+      <div>
         <ImSpinner size="32" className="icon-spin" />
       </div>
     </div>
