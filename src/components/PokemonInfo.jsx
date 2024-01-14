@@ -9,16 +9,23 @@ export class PokemonInfo extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     const prevName = prevProps.pokemonName;
-    const nextname = this.props.pokemonName;
+    const nextName = this.props.pokemonName;
 
     //тут завжди робити перевірку
-    if (prevName !== nextname) {
+    if (prevName !== nextName) {
       console.log('name changed');
 
       this.setState({ loading: true });
       setTimeout(() => {
-        fetch(`http://pokeapi.co/api/v2/pokemon/${nextname}`)
-          .then(res => res.json())
+        fetch(`http://pokeapi.co/api/v2/pokemon/${nextName}`)
+          .then(response => {
+            if (response.ok) {
+              return response.json();
+            }
+
+            return Promise.reject(new Error(`No name ${nextName}`));
+          })
+
           .then(pokemon => this.setState({ pokemon })) //передаємо в активний стейт імя покемона
           .catch(error => this.setState({ error }))
           .finally(() => this.setState({ loading: false }));
@@ -32,7 +39,7 @@ export class PokemonInfo extends Component {
 
     return (
       <div>
-        {error && <h1>No name {pokemonName} of pockemon</h1>}
+        {error && <h1>{error.message}</h1>}
         {loading && <div>Loading...</div>}
         {!pokemonName && <div>Enter pokemon name</div>}
         {pokemon && (
