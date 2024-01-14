@@ -1,4 +1,6 @@
 import { Component } from 'react';
+import PokemonErrorView from './PokemonErrorView';
+import PokemonDataView from './PokemonDataView';
 
 export class PokemonInfo extends Component {
   state = {
@@ -15,19 +17,17 @@ export class PokemonInfo extends Component {
     if (prevName !== nextName) {
       this.setState({ status: 'pending' });
 
-      setTimeout(() => {
-        fetch(`http://pokeapi.co/api/v2/pokemon/${nextName}`)
-          .then(response => {
-            if (response.ok) {
-              return response.json();
-            }
+      fetch(`http://pokeapi.co/api/v2/pokemon/${nextName}`)
+        .then(response => {
+          if (response.ok) {
+            return response.json();
+          }
 
-            return Promise.reject(new Error(`No name ${nextName}`));
-          })
+          return Promise.reject(new Error(`No name ${nextName}`));
+        })
 
-          .then(pokemon => this.setState({ pokemon, status: 'resolved' })) //передаємо в активний стейт імя покемона
-          .catch(error => this.setState({ error, status: 'rejected' }));
-      }, 1000);
+        .then(pokemon => this.setState({ pokemon, status: 'resolved' })) //передаємо в активний стейт імя покемона
+        .catch(error => this.setState({ error, status: 'rejected' }));
     }
   }
 
@@ -43,20 +43,11 @@ export class PokemonInfo extends Component {
     }
 
     if (status === 'rejected') {
-      return <h1>{error.message}</h1>;
+      return <PokemonErrorView message={error.message} />;
     }
 
     if (status === 'resolved') {
-      return (
-        <div>
-          <p>{pokemon.name}</p>
-          <img
-            src={pokemon.sprites.other['official-artwork'].front_default}
-            alt={pokemon.name}
-            width="240"
-          />
-        </div>
-      );
+      return <PokemonDataView pokemon={pokemon} />;
     }
   }
 }
